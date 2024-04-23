@@ -4,13 +4,14 @@ PKG             := jasper
 $(PKG)_WEBSITE  := https://www.ece.uvic.ca/~mdadams/jasper/
 $(PKG)_DESCR    := JasPer
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.0.19
-$(PKG)_CHECKSUM := b9d16162a088617ada36450f2374d72165377cb64b33ed197c200bcfb73ec76c
+$(PKG)_VERSION  := 4.2.2
+$(PKG)_CHECKSUM := 0fb8ad07ea6c06d43567fa5d2592f60c53a2e868fff8b9da1bc2bb950d7dbfe5
 $(PKG)_GH_CONF  := mdadams/jasper/tags, version-
 $(PKG)_DEPS     := cc jpeg
 
 define $(PKG)_BUILD
     cd '$(BUILD_DIR)' && $(TARGET)-cmake '$(SOURCE_DIR)' \
+        -DJAS_STDC_VERSION="`'$(TARGET)-gcc' -dM -E - < /dev/null | grep __STDC_VERSION__ | '$(SED)' 's/^\([^ ]\+ \)\{2\}//;'`" \
         -DJAS_ENABLE_SHARED=$(CMAKE_SHARED_BOOL) \
         -DJAS_ENABLE_LIBJPEG=ON \
         -DJAS_ENABLE_OPENGL=OFF \

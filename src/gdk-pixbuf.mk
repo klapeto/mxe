@@ -4,12 +4,12 @@ PKG             := gdk-pixbuf
 $(PKG)_WEBSITE  := https://gtk.org/
 $(PKG)_DESCR    := GDK-pixbuf
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.32.3
-$(PKG)_CHECKSUM := 2b6771f1ac72f687a8971e59810b8dc658e65e7d3086bd2e676e618fd541d031
+$(PKG)_VERSION  := 2.42.10
+$(PKG)_CHECKSUM := ee9b6c75d13ba096907a2e3c6b27b61bcd17f5c7ebeab5a5b439d2f2e39fe44b
 $(PKG)_SUBDIR   := gdk-pixbuf-$($(PKG)_VERSION)
 $(PKG)_FILE     := gdk-pixbuf-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.gnome.org/sources/gdk-pixbuf/$(call SHORT_PKG_VERSION,$(PKG))/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc glib jasper jpeg libiconv libpng tiff
+$(PKG)_DEPS     := cc meson-wrapper glib jasper jpeg libiconv libpng tiff
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://gitlab.gnome.org/GNOME/gdk-pixbuf/tags' | \
@@ -19,13 +19,13 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && autoreconf -fi -I'$(PREFIX)/$(TARGET)/share/aclocal'
-    cd '$(1)' && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        $(if $(BUILD_STATIC), \
-           --disable-modules,) \
-        --with-included-loaders \
-        --without-gdiplus \
-        LIBS="`'$(TARGET)-pkg-config' --libs libtiff-4`"
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install
+    LDFLAGS="`'$(TARGET)-pkg-config' --libs libjpeg libpng libtiff-4`" \
+    '$(MXE_MESON_WRAPPER)' $(MXE_MESON_OPTS) \
+      -Dinstalled_tests=false \
+      -Dintrospection=disabled \
+      -Dman=false \
+      $(if $(BUILD_STATIC),-Dbuiltin_loaders=all) \
+    '$(BUILD_DIR)' '$(SOURCE_DIR)'
+    '$(MXE_NINJA)' -C '$(BUILD_DIR)' -j '$(JOBS)'
+    '$(MXE_NINJA)' -C '$(BUILD_DIR)' -j '$(JOBS)' install
 endef

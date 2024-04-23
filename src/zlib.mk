@@ -3,22 +3,13 @@
 PKG             := zlib
 $(PKG)_WEBSITE  := https://zlib.net/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.2.11
-$(PKG)_CHECKSUM := 4ff941449631ace0d4d203e3483be9dbc9da454084111f97ea0a2114e19bf066
-$(PKG)_SUBDIR   := zlib-$($(PKG)_VERSION)
-$(PKG)_FILE     := zlib-$($(PKG)_VERSION).tar.xz
-$(PKG)_URL      := https://zlib.net/$($(PKG)_FILE)
-$(PKG)_URL_2    := https://$(SOURCEFORGE_MIRROR)/project/libpng/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_VERSION  := 1.3.1
+$(PKG)_CHECKSUM := 38ef96b8dfe510d42707d9c781877914792541133e1870841463bfa73f883e32
+$(PKG)_GH_CONF  := madler/zlib/releases,v,,,,.tar.xz
 $(PKG)_DEPS     := cc
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
 $(PKG)_DEPS_$(BUILD) :=
-
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://zlib.net/' | \
-    $(SED) -n 's,.*zlib-\([0-9][^>]*\)\.tar.*,\1,ip' | \
-    head -1
-endef
 
 define $(PKG)_BUILD
     cd '$(1)' && CHOST='$(TARGET)' ./configure \

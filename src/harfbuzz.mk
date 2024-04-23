@@ -4,17 +4,20 @@ PKG             := harfbuzz
 $(PKG)_WEBSITE  := https://wiki.freedesktop.org/www/Software/HarfBuzz/
 $(PKG)_DESCR    := HarfBuzz
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.7.1
-$(PKG)_CHECKSUM := 431c856ff18eeca89b2a36b58f2c2d56273cd522c34c0ffbc9dd6f7da4b9bd08
-$(PKG)_GH_CONF  := harfbuzz/harfbuzz/releases
-$(PKG)_DEPS     := cc cairo freetype-bootstrap glib icu4c
+$(PKG)_VERSION  := 8.4.0
+$(PKG)_CHECKSUM := af4ea73e25ab748c8c063b78c2f88e48833db9b2ac369e29bd115702e789755e
+$(PKG)_GH_CONF  := harfbuzz/harfbuzz/releases,,,,,.tar.xz
+$(PKG)_DEPS     := cc meson-wrapper brotli cairo freetype-bootstrap glib icu4c
 
 define $(PKG)_BUILD
+    '$(MXE_MESON_WRAPPER)' $(MXE_MESON_OPTS) \
+        -Dchafa=disabled \
+        -Dtests=disabled \
+        -Ddocs=disabled \
+        -Dintrospection=disabled \
+        '$(BUILD_DIR)' '$(SOURCE_DIR)'
     # mman-win32 is only a partial implementation
-    cd '$(1)' && ./autogen.sh && ./configure \
-        $(MXE_CONFIGURE_OPTS) \
-        ac_cv_header_sys_mman_h=no \
-        CXXFLAGS='-std=c++11' \
-        LIBS='-lstdc++'
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install
+    $(SED) -i '/HAVE_SYS_MMAN_H/d' '$(BUILD_DIR)/config.h'
+    '$(MXE_NINJA)' -C '$(BUILD_DIR)' -j '$(JOBS)'
+    '$(MXE_NINJA)' -C '$(BUILD_DIR)' -j '$(JOBS)' install
 endef

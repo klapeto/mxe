@@ -3,8 +3,8 @@
 PKG             := libgcrypt
 $(PKG)_WEBSITE  := https://directory.fsf.org/wiki/Libgcrypt
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.8.6
-$(PKG)_CHECKSUM := 0cba2700617b99fc33864a0c16b1fa7fdf9781d9ed3509f5d767178e5fd7b975
+$(PKG)_VERSION  := 1.10.3
+$(PKG)_CHECKSUM := 8b0870897ac5ac67ded568dcfadf45969cfa8a6beb0fd60af2a9eadc2a3272aa
 $(PKG)_SUBDIR   := libgcrypt-$($(PKG)_VERSION)
 $(PKG)_FILE     := libgcrypt-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://gnupg.org/ftp/gcrypt/libgcrypt/$($(PKG)_FILE)
@@ -34,7 +34,9 @@ define $(PKG)_MAKE
      echo 'Version: $($(PKG)_VERSION)'; \
      echo 'Description: $(PKG)'; \
      echo 'Libs: ' "`$(TARGET)-libgcrypt-config --libs`"; \
-     echo 'Cflags: ' "`$(TARGET)-libgcrypt-config --cflags`";) \
+     echo 'Cflags: ' "`$(TARGET)-libgcrypt-config --cflags`"; \
+     echo 'Libs: -lws2_32'; \
+     ) \
      > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
 
     '$(TARGET)-gcc' \
