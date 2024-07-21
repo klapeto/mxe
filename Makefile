@@ -8,7 +8,7 @@ EXT_DIR  := $(TOP_DIR)/ext
 # See docs/gmsl.html for further information
 include $(EXT_DIR)/gmsl
 
-MXE_TRIPLETS       := i686-w64-mingw32 x86_64-w64-mingw32
+MXE_TRIPLETS       := i686-w64-mingw32 x86_64-w64-mingw32 aarch64-w64-mingw32
 MXE_LIB_TYPES      := static shared
 MXE_TARGET_LIST    := $(strip $(foreach TRIPLET,$(MXE_TRIPLETS),\
                           $(addprefix $(TRIPLET).,$(MXE_LIB_TYPES))))
@@ -171,6 +171,7 @@ MXE_GCC_THREADS = \
 # default (first item) and alternate, revisit if gcc/mingw-w64 change defaults
 i686-w64-mingw32_EH   := sjlj dw2
 x86_64-w64-mingw32_EH := seh sjlj
+aarch64-w64-mingw32_EH := seh sjlj
 
 # functions to determine exception handling from user-specified target
 # $(or $(TARGET),$(1)) allows use as both function and inline snippet
@@ -831,7 +832,7 @@ build-only-$(1)_$(3): BUILD_$(if $(findstring shared,$(3)),SHARED,STATIC) = TRUE
 build-only-$(1)_$(3): BUILD_$(if $(call seq,$(TARGET),$(BUILD)),NATIVE,CROSS) = TRUE
 build-only-$(1)_$(3): $(if $(findstring win32,$(TARGET)),WIN32,POSIX)_THREADS = TRUE
 build-only-$(1)_$(3): LIB_SUFFIX = $(if $(findstring shared,$(3)),dll,a)
-build-only-$(1)_$(3): BITS = $(if $(findstring x86_64,$(3)),64,32)
+build-only-$(1)_$(3): BITS = $(if $(findstring 64-w64,$(3)),64,32)
 build-only-$(1)_$(3): PROCESSOR = $(firstword $(call split,-,$(3)))
 build-only-$(1)_$(3): BUILD_TYPE = $(if $(findstring debug,$(3) $($(1)_CONFIGURE_OPTS)),debug,release)
 build-only-$(1)_$(3): BUILD_TYPE_SUFFIX = $(if $(findstring debug,$(3) $($(1)_CONFIGURE_OPTS)),d)
