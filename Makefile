@@ -56,6 +56,7 @@ REQUIREMENTS := \
     autopoint \
     bash \
     bison \
+    makeinfo \
     $(BUILD_CC) \
     $(BUILD_CXX) \
     bzip2 \
