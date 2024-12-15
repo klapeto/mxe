@@ -4,12 +4,12 @@ PKG             := curl
 $(PKG)_WEBSITE  := https://curl.haxx.se/libcurl/
 $(PKG)_DESCR    := cURL
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 8.8.0
-$(PKG)_CHECKSUM := 0f58bb95fc330c8a46eeb3df5701b0d90c9d9bfcc42bd1cd08791d12551d4400
+$(PKG)_VERSION  := 8.11.1
+$(PKG)_CHECKSUM := c7ca7db48b0909743eaef34250da02c19bc61d4f1dcedd6603f109409536ab56
 $(PKG)_SUBDIR   := curl-$($(PKG)_VERSION)
 $(PKG)_FILE     := curl-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://curl.haxx.se/download/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc brotli libidn2 libpsl libssh2 nghttp2 pthreads
+$(PKG)_DEPS     := cc brotli libidn2 libpsl libssh2 nghttp2 pthreads zstd
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://curl.haxx.se/download/?C=M;O=D' | \
