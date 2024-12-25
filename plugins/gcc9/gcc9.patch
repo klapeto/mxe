@@ -5,7 +5,7 @@ Contains ad hoc patches for cross building.
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Tony Theodore <tonyt@logyst.com>
 Date: Thu, 2 Feb 2017 02:05:50 +1100
-Subject: [PATCH 1/3] allow native cpu detection when building with clang
+Subject: [PATCH 1/4] allow native cpu detection when building with clang
 
 function was disabled for non-gcc5 in:
 https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=b587c12551143c14f023860a1dbdf7316ae71f27;hp=43096b526a9f23008b9769372f11475ae63487bc
@@ -29,7 +29,7 @@ index 1111111..2222222 100644
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Tony Theodore <tonyt@logyst.com>
 Date: Fri, 6 Apr 2018 13:40:22 +1000
-Subject: [PATCH 2/3] remove hard-coded mingw from include path
+Subject: [PATCH 2/4] remove hard-coded mingw from include path
 
 
 diff --git a/gcc/config.gcc b/gcc/config.gcc
@@ -62,7 +62,7 @@ index 1111111..2222222 100644
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Liu Hao <lh_mouse@126.com>
 Date: Wed, 6 May 2020 21:49:18 +0800
-Subject: [PATCH 3/3] libgomp: Don't hard-code MS printf attributes
+Subject: [PATCH 3/4] libgomp: Don't hard-code MS printf attributes
 
 Source: https://github.com/msys2/MINGW-packages/blob/9501ee2afc8d01dc7d85383e4b22e91c30d93ca7/mingw-w64-gcc/0020-libgomp-Don-t-hard-code-MS-printf-attributes.patch
 
@@ -110,3 +110,35 @@ index 1111111..2222222 100644
  
  struct gomp_task;
  struct gomp_taskgroup;
+
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ian McInerney <i.mcinerney17@imperial.ac.uk>
+Date: Thu, 4 Apr 2024 15:16:32 +0000 (16:16 +0100)
+Subject: [PATCH 4/4] libgfortran: Fix compilation of gf_vsnprintf
+
+Source: https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=3bd3ca05b519b99b5ea570c10fd80737cd4c6c49#patch1
+
+diff --git a/libgfortran/runtime/error.c b/libgfortran/runtime/error.c
+index e840f5395992..044298294d82 100644
+--- a/libgfortran/runtime/error.c
++++ b/libgfortran/runtime/error.c
+@@ -142,15 +142,15 @@ gf_vsnprintf (char *str, size_t size, const char *format, va_list ap)
+ {
+   int written;
+ 
+-  written = vsprintf(buffer, format, ap);
++  written = vsprintf(str, format, ap);
+ 
+   if (written >= size - 1)
+     {
+-      /* The error message was longer than our buffer.  Ouch.  Because
++      /* The error message was longer than the string size.  Ouch.  Because
+ 	 we may have messed up things badly, report the error and
+ 	 quit.  */
+-#define ERROR_MESSAGE "Internal error: buffer overrun in gf_vsnprintf()\n"
+-      write (STDERR_FILENO, buffer, size - 1);
++#define ERROR_MESSAGE "Internal error: string overrun in gf_vsnprintf()\n"
++      write (STDERR_FILENO, str, size - 1);
+       write (STDERR_FILENO, ERROR_MESSAGE, strlen (ERROR_MESSAGE));
+       sys_abort ();
+ #undef ERROR_MESSAGE
